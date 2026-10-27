@@ -1,92 +1,134 @@
-
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable
+} from 'react-native';
+
+import {
+  COLORS,
+  SPACE,
+  RADIUS,
+  TYPO
+} from '../styles/tokens';
 
 export default function DiaryCard({
   title,
   date,
   preview,
-  moodSource,
-  mood,
+  moodImage,
+  liked = false,
+  onPress = () => {},
+  onToggleLike = () => {},
 }) {
-  const colors = {
-    Senang: '#DDF5E5',
-    Produktif: '#DDEBFF',
-    Tenang: '#F0E4FF',
-    Lelah: '#FFE8D6',
-    Bersyukur: '#FFF2BD',
-  };
-
-  const color = colors[mood] || '#E5E7EB';
 
   return (
-    <View style={[styles.card, { borderLeftColor: color }]}>
-      <Image source={moodSource} style={styles.image} />
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        { opacity: pressed ? 0.85 : 1 }
+      ]}
+      accessible
+      accessibilityLabel={`Entri ${title} tanggal ${date}`}
+    >
 
-      <View style={styles.content}>
-        <Text style={[styles.badge, { backgroundColor: color }]}>
-          {mood}
-        </Text>
+      <View style={styles.card}>
 
-        <Text style={styles.title} numberOfLines={1}>
-          {title}
-        </Text>
+        <Image
+          source={moodImage}
+          style={styles.mood}
+        />
 
-        <Text style={styles.date}>{date}</Text>
+        <View style={styles.content}>
 
-        <Text style={styles.preview} numberOfLines={3}>
-          {preview}
-        </Text>
+          <Text
+            style={styles.title}
+            numberOfLines={1}
+          >
+            {title}
+          </Text>
+
+          <Text style={styles.date}>
+            {date}
+          </Text>
+
+          <Text
+            style={styles.preview}
+            numberOfLines={3}
+            ellipsizeMode="tail"
+          >
+            {preview}
+          </Text>
+
+        </View>
+
+        <Pressable
+          onPress={onToggleLike}
+          hitSlop={8}
+          accessibilityLabel={
+            liked ? 'Batal suka' : 'Suka'
+          }
+        >
+
+          <Text style={styles.like}>
+            {liked ? '❤️' : '🤍'}
+          </Text>
+
+        </Pressable>
+
       </View>
-    </View>
+
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+
   card: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    gap: SPACE.m,
+    padding: SPACE.m,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderLeftWidth: 5,
-    borderRadius: 16,
-    padding: 14,
-    marginBottom: 14,
-    gap: 12,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.card,
+    backgroundColor: COLORS.surface,
+    alignItems: 'center',
   },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#F3F4F6',
+
+  mood: {
+    width: 64,
+    height: 64,
+    borderRadius: RADIUS.avatar,
+    backgroundColor: '#eef2ff',
   },
+
   content: {
     flex: 1,
   },
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-    borderRadius: 10,
-    overflow: 'hidden',
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#374151',
+
+  title: {
+    fontSize: TYPO.title,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
+
+  date: {
+    fontSize: TYPO.caption,
+    color: COLORS.muted,
     marginBottom: 6,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1F2937',
-  },
-  date: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginVertical: 5,
-  },
+
   preview: {
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#4B5563',
+    fontSize: TYPO.body,
+    color: COLORS.text,
   },
+
+  like: {
+    fontSize: 22,
+    paddingHorizontal: 6,
+  },
+
 });
